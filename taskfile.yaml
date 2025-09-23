@@ -1,0 +1,97 @@
+version: "3"
+
+vars:
+  GO_VERSION: "1.25"
+  GOLANGCI_LINT_VERSION: "v2.5.0"
+  GCI_VERSION: "v0.13.7"
+  GOFUMPT_VERSION: "v0.9.1"
+  BUF_VERSION: "1.53.0"
+  PROTOC_GEN_GO_VERSION: "v1.36.6"
+  PROTOC_GEN_GO_GRPC_VERSION: "v1.5.1"
+  PROTOC_GEN_VALIDATE_VERSION: "v1.2.1"
+
+  BIN_DIR: "{{.ROOT_DIR}}/bin"
+  GOLANGCI_LINT: "{{.BIN_DIR}}/golangci-lint"
+  GCI: "{{.BIN_DIR}}/gci"
+  GOFUMPT: "{{.BIN_DIR}}/gofumpt"
+  BUF: "{{.BIN_DIR}}/buf"
+  PROTOC_GEN_GO: "{{.BIN_DIR}}/protoc-gen-go"
+  PROTOC_GEN_GO_GRPC: "{{.BIN_DIR}}/protoc-gen-go-grpc"
+  PROTOC_GEN_VALIDATE: "{{.BIN_DIR}}/protoc-gen-validate"
+  PROJECT_PREFIX: "github.com/gomeal"
+
+tasks:
+  # Установка инструментов
+  install-tools:
+    desc: "Устанавливает все необходимые инструменты"
+    cmds:
+      - task: install-proto-tools
+    status:
+      - test -x {{.BUF}}
+      - test -x {{.PROTOC_GEN_GO}}
+      - test -x {{.PROTOC_GEN_GO_GRPC}}
+      - test -x {{.PROTOC_GEN_VALIDATE}}
+
+  install-proto-tools:
+    desc: "Устанавливает buf и protoc плагины"
+    cmds:
+      - mkdir -p {{.BIN_DIR}}
+      - |
+        if [ ! -f {{.BUF}} ]; then
+          echo "Installing buf..."
+          GOBIN={{.BIN_DIR}} go install github.com/bufbuild/buf/cmd/buf@v{{.BUF_VERSION}}
+        fi
+      - |
+        if [ ! -f {{.PROTOC_GEN_GO}} ]; then
+          echo "Installing protoc-gen-go..."
+          GOBIN={{.BIN_DIR}} go install google.golang.org/protobuf/cmd/protoc-gen-go@{{.PROTOC_GEN_GO_VERSION}}
+        fi
+      - |
+        if [ ! -f {{.PROTOC_GEN_GO_GRPC}} ]; then
+          echo "Installing protoc-gen-go-grpc..."
+          GOBIN={{.BIN_DIR}} go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@{{.PROTOC_GEN_GO_GRPC_VERSION}}
+        fi
+      - |
+        if [ ! -f {{.PROTOC_GEN_VALIDATE}} ]; then
+          echo "Installing protoc-gen-validate..."
+          GOBIN={{.BIN_DIR}} go install github.com/envoyproxy/protoc-gen-validate@{{.PROTOC_GEN_VALIDATE_VERSION}}
+        fi
+    status:
+      - test -x {{.BUF}}
+      - test -x {{.PROTOC_GEN_GO}}
+      - test -x {{.PROTOC_GEN_GO_GRPC}}
+      - test -x {{.PROTOC_GEN_VALIDATE}}
+
+  # Proto команды
+  proto:generate:
+    desc: "Генерирует Go код из proto файлов"
+    deps: [install-proto-tools]
+    cmds:
+      - task: proto:update-deps
+      - task: proto:lint
+      - task: proto:gen
+      - echo "✅ Proto generation completed!"
+
+  proto:update-deps:
+    desc: "Обновляет зависимости protobuf"
+    deps: [install-proto-tools]
+    dir: proto
+    cmds:
+      - echo "Updating proto dependencies..."
+      - "{{.BUF}} dep update"
+
+  proto:lint:
+    desc: "Проверяет .proto файлы"
+    deps: [install-proto-tools]
+    dir: proto
+    cmds:
+      - echo "Linting proto files..."
+      - "{{.BUF}} lint"
+
+  proto:gen:
+    desc: "Генерирует Go код из .proto"
+    deps: [install-proto-tools]
+    dir: proto
+    cmds:
+      - echo "Generating Go code..."
+      - "{{.BUF}} generate"

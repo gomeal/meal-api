@@ -1,0 +1,284 @@
+syntax = "proto3";
+
+package meal.v1;
+
+import "validate/validate.proto";
+
+option go_package = "github.com/gomeal/meal-api/proto/meal/v1;meal_v1";
+
+// Сервис управления блюдами и рецептами
+// Предоставляет функциональность для поиска блюд, управления избранными рецептами
+// и генерации списков покупок на основе выбранных блюд
+service MealsService {
+  // Поиск блюд по различным фильтрам
+  rpc SearchMeals(SearchMealsRequest) returns (SearchMealsResponse);
+
+  // Добавить блюдо в избранное пользователя
+  rpc AddToFavorites(AddToFavoritesRequest) returns (AddToFavoritesResponse);
+
+  // Получить список избранных блюд пользователя
+  rpc GetFavorites(GetFavoritesRequest) returns (GetFavoritesResponse);
+
+  // Сгенерировать список покупок на основе выбранных блюд
+  rpc GenerateShoppingList(GenerateShoppingListRequest) returns (GenerateShoppingListResponse);
+}
+
+// Запрос для поиска блюд по различным критериям
+// Поддерживает фильтрацию по названию, категории, кухне, ингредиентам и времени приготовления
+message SearchMealsRequest {
+  // Поисковый запрос по названию блюда (необязательный)
+  // Пример: "pasta", "chicken soup"
+  string query = 1 [(validate.rules).string.max_len = 100];
+  
+  // ID категории блюда (необязательный)
+  // Например: 1 для "Beef", 2 для "Chicken", 3 для "Dessert"
+  optional int32 category_id = 2 [(validate.rules).int32.gte = 1];
+  
+  // ID типа кухни (необязательный) 
+  // Например: 1 для "Italian", 2 для "Chinese", 3 для "Mexican"
+  optional int32 cuisine_id = 3 [(validate.rules).int32.gte = 1];
+  
+  // ID ингредиентов которые ДОЛЖНЫ присутствовать в блюде
+  // Например: [15, 23, 45] для ["chicken", "garlic", "onion"]
+  repeated int32 include_ingredient_ids = 4 [(validate.rules).repeated = {
+    max_items: 10,
+    items: {int32: {gte: 1}}
+  }];
+  
+  // ID ингредиентов которые НЕ должны присутствовать в блюде
+  // Например: [78, 92, 156] для ["nuts", "dairy", "gluten"]
+  repeated int32 exclude_ingredient_ids = 5 [(validate.rules).repeated = {
+    max_items: 10,
+    items: {int32: {gte: 1}}
+  }];
+  
+  // Максимальное время приготовления в минутах (необязательный)
+  // Если не указано, то без ограничений по времени
+  optional int32 max_cooking_time_minutes = 6 [(validate.rules).int32 = {
+    gte: 1,
+    lte: 600  // максимум 10 часов
+  }];
+  
+  // Пагинация: размер страницы (по умолчанию 20)
+  int32 page_size = 7 [(validate.rules).int32 = {
+    gte: 1,
+    lte: 100
+  }];
+  
+  // Пагинация: номер страницы (начинается с 1)
+  int32 page = 8 [(validate.rules).int32 = {
+    gte: 1
+  }];
+}
+
+// Ответ на запрос поиска блюд
+// Содержит найденные блюда и метаданные для пагинации
+message SearchMealsResponse {
+  // Найденные блюда
+  repeated Meal meals = 1;
+  
+  // Общее количество найденных блюд (для пагинации)
+  int32 total_count = 2;
+  
+  // Номер текущей страницы
+  int32 page = 3;
+  
+  // Размер страницы
+  int32 page_size = 4;
+  
+  // Есть ли следующая страница
+  bool has_next_page = 5;
+}
+
+// Представление блюда с полной информацией
+// Включает основные данные, категорию, кухню, ингредиенты и медиа-контент
+message Meal {
+  // Уникальный идентификатор блюда в нашей БД
+  int32 id = 1;
+  
+  // Внешний идентификатор из TheMealDB (например: "52977")
+  string external_id = 2;
+  
+  // Название блюда
+  string name = 3;
+  
+  // Инструкции по приготовлению
+  string description = 4;
+  
+  // URL изображения блюда
+  string image_url = 5;
+  
+  // Информация о категории блюда
+  Category category = 6;
+  
+  // Информация о типе кухни
+  Cuisine cuisine = 7;
+  
+  // Теги блюда (например: ["spicy", "quick", "healthy"])
+  repeated string tags = 8;
+  
+  // Ингредиенты с количеством
+  repeated MealIngredient ingredients = 9;
+  
+  // Время приготовления в минутах
+  // Может быть 0 если неизвестно
+  int32 cooking_time_minutes = 10;
+  
+  // URL видео с блюдом (если есть)
+  optional string video_url = 11;
+}
+
+// Категория блюда (например, мясные блюда, десерты, супы)
+// Используется для классификации и фильтрации блюд
+message Category {
+  // ID категории
+  int32 id = 1;
+  
+  // Название категории (например: "Beef", "Chicken", "Dessert")
+  string name = 2;
+  
+  // Описание категории (необязательное)
+  optional string description = 3;
+}
+
+// Тип кухни мира (например, итальянская, китайская, мексиканская)
+// Определяет кулинарную традицию и стиль приготовления блюда
+message Cuisine {
+  // ID кухни
+  int32 id = 1;
+  
+  // Название кухни (например: "Italian", "Chinese", "Mexican")
+  string name = 2;
+  
+  // Описание кухни (необязательное)
+  optional string description = 3;
+}
+
+// Ингредиент блюда с количеством и позицией в рецепте
+// Содержит информацию о том, что и в каком количестве нужно для приготовления
+message MealIngredient {
+  // ID ингредиента
+  int32 ingredient_id = 1;
+  
+  // Название ингредиента
+  string ingredient_name = 2;
+  
+  // Количество и единица измерения
+  // Примеры: "2 cups", "500g", "1 tsp", "to taste"
+  string measure = 3;
+  
+  // Позиция в списке ингредиентов (для правильного порядка)
+  int32 position = 4;
+}
+
+// Запрос на добавление блюда в избранное пользователя
+// Создает связь между пользователем и выбранным блюдом
+message AddToFavoritesRequest {
+  // ID пользователя (UUID)
+  // Пример: "550e8400-e29b-41d4-a716-446655440000"
+  string user_id = 1 [(validate.rules).string.uuid = true];
+  
+  // ID блюда которое нужно добавить в избранное
+  int32 meal_id = 2 [(validate.rules).int32.gte = 1];
+}
+
+// Ответ на добавление блюда в избранное
+// Возвращает идентификатор созданной записи в таблице избранных
+message AddToFavoritesResponse {
+  // ID записи в таблице user_favorites
+  int32 favorite_id = 1;
+}
+
+// Запрос на получение списка избранных блюд пользователя
+// Поддерживает пагинацию для больших списков избранного
+message GetFavoritesRequest {
+  // ID пользователя (UUID)
+  // Пример: "550e8400-e29b-41d4-a716-446655440000"
+  string user_id = 1 [(validate.rules).string.uuid = true];
+  
+  // Пагинация: размер страницы
+  int32 page_size = 2 [(validate.rules).int32 = {
+    gte: 1,
+    lte: 100
+  }];
+  
+  // Пагинация: номер страницы (начинается с 1)
+  int32 page = 3 [(validate.rules).int32 = {
+    gte: 1
+  }];
+}
+
+// Ответ со списком избранных блюд пользователя
+// Включает полную информацию о блюдах и метаданные избранного
+message GetFavoritesResponse {
+  // Список избранных блюд с информацией о когда добавлено
+  repeated FavoriteMeal favorite_meals = 1;
+  
+  // Общее количество избранных блюд (для пагинации)
+  int32 total_count = 2;
+  
+  // Номер текущей страницы
+  int32 page = 3;
+  
+  // Размер страницы
+  int32 page_size = 4;
+  
+  // Есть ли следующая страница
+  bool has_next_page = 5;
+}
+
+// Избранное блюдо с дополнительными метаданными
+// Содержит полную информацию о блюде и данные о добавлении в избранное
+message FavoriteMeal {
+  // ID записи в таблице user_favorites (для возможного удаления)
+  int32 favorite_id = 1;
+  
+  // Полная информация о блюде
+  Meal meal = 2;
+  
+  // Когда блюдо было добавлено в избранное (ISO 8601 формат)
+  // Пример: "2024-01-15T10:30:00Z"
+  string added_at = 3;
+}
+
+// Запрос на генерацию списка покупок
+// Принимает список блюд и создает агрегированный список необходимых ингредиентов
+message GenerateShoppingListRequest {
+  // ID блюд для которых нужно составить список покупок
+  // Минимум одно блюдо должно быть указано
+  repeated int32 meal_ids = 1 [(validate.rules).repeated = {
+    min_items: 1,
+    max_items: 50,
+    items: {int32: {gte: 1}}
+  }];
+}
+
+// Ответ со списком покупок
+// Содержит агрегированные ингредиенты из всех выбранных блюд
+message GenerateShoppingListResponse {
+  // Агрегированный список ингредиентов для покупки
+  repeated ShoppingListItem items = 1;
+  
+  // Общее количество уникальных ингредиентов
+  int32 total_items_count = 2;
+  
+  // Количество блюд в списке покупок
+  int32 meals_count = 3;
+}
+
+// Элемент списка покупок
+// Представляет один ингредиент с агрегированной информацией из всех блюд
+message ShoppingListItem {
+  // ID ингредиента
+  int32 ingredient_id = 1;
+  
+  // Название ингредиента
+  string ingredient_name = 2;
+  
+  // Список всех количеств этого ингредиента из разных блюд
+  // Примеры: ["2 cups", "500g", "1 tsp"]
+  repeated string measures = 3;
+  
+  // В каких блюдах используется этот ингредиент (названия блюд)
+  repeated string used_in_meals = 4;
+}
