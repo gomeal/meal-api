@@ -7,12 +7,13 @@
 package meal_v1
 
 import (
-	_ "github.com/envoyproxy/protoc-gen-validate/validate"
-	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
+
+	_ "github.com/envoyproxy/protoc-gen-validate/validate"
+	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
+	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 )
 
 const (
@@ -1184,23 +1185,26 @@ func file_meal_v1_meal_proto_rawDescGZIP() []byte {
 	return file_meal_v1_meal_proto_rawDescData
 }
 
-var file_meal_v1_meal_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
-var file_meal_v1_meal_proto_goTypes = []any{
-	(*SearchMealsRequest)(nil),           // 0: meal.v1.SearchMealsRequest
-	(*SearchMealsResponse)(nil),          // 1: meal.v1.SearchMealsResponse
-	(*Meal)(nil),                         // 2: meal.v1.Meal
-	(*Category)(nil),                     // 3: meal.v1.Category
-	(*Cuisine)(nil),                      // 4: meal.v1.Cuisine
-	(*MealIngredient)(nil),               // 5: meal.v1.MealIngredient
-	(*AddToFavoritesRequest)(nil),        // 6: meal.v1.AddToFavoritesRequest
-	(*AddToFavoritesResponse)(nil),       // 7: meal.v1.AddToFavoritesResponse
-	(*GetFavoritesRequest)(nil),          // 8: meal.v1.GetFavoritesRequest
-	(*GetFavoritesResponse)(nil),         // 9: meal.v1.GetFavoritesResponse
-	(*FavoriteMeal)(nil),                 // 10: meal.v1.FavoriteMeal
-	(*GenerateShoppingListRequest)(nil),  // 11: meal.v1.GenerateShoppingListRequest
-	(*GenerateShoppingListResponse)(nil), // 12: meal.v1.GenerateShoppingListResponse
-	(*ShoppingListItem)(nil),             // 13: meal.v1.ShoppingListItem
-}
+var (
+	file_meal_v1_meal_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
+	file_meal_v1_meal_proto_goTypes  = []any{
+		(*SearchMealsRequest)(nil),           // 0: meal.v1.SearchMealsRequest
+		(*SearchMealsResponse)(nil),          // 1: meal.v1.SearchMealsResponse
+		(*Meal)(nil),                         // 2: meal.v1.Meal
+		(*Category)(nil),                     // 3: meal.v1.Category
+		(*Cuisine)(nil),                      // 4: meal.v1.Cuisine
+		(*MealIngredient)(nil),               // 5: meal.v1.MealIngredient
+		(*AddToFavoritesRequest)(nil),        // 6: meal.v1.AddToFavoritesRequest
+		(*AddToFavoritesResponse)(nil),       // 7: meal.v1.AddToFavoritesResponse
+		(*GetFavoritesRequest)(nil),          // 8: meal.v1.GetFavoritesRequest
+		(*GetFavoritesResponse)(nil),         // 9: meal.v1.GetFavoritesResponse
+		(*FavoriteMeal)(nil),                 // 10: meal.v1.FavoriteMeal
+		(*GenerateShoppingListRequest)(nil),  // 11: meal.v1.GenerateShoppingListRequest
+		(*GenerateShoppingListResponse)(nil), // 12: meal.v1.GenerateShoppingListResponse
+		(*ShoppingListItem)(nil),             // 13: meal.v1.ShoppingListItem
+	}
+)
+
 var file_meal_v1_meal_proto_depIdxs = []int32{
 	2,  // 0: meal.v1.SearchMealsResponse.meals:type_name -> meal.v1.Meal
 	3,  // 1: meal.v1.Meal.category:type_name -> meal.v1.Category

@@ -1,0 +1,12 @@
+application_name:
+  type: "string"
+  value: "meal-api"
+env:
+  type: "string"
+  value: "LOCAL"
+meal_fetcher_cron_duration:
+  type: "duration"
+  value: "5s"
+meal_fetcher_cron_batch_size:
+  type: "int"
+  value: 10

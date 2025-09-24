@@ -148,7 +148,6 @@ func (m *SearchMealsRequest) validate(all bool) error {
 	}
 
 	if m.CategoryId != nil {
-
 		if m.GetCategoryId() < 1 {
 			err := SearchMealsRequestValidationError{
 				field:  "CategoryId",
@@ -159,11 +158,9 @@ func (m *SearchMealsRequest) validate(all bool) error {
 			}
 			errors = append(errors, err)
 		}
-
 	}
 
 	if m.CuisineId != nil {
-
 		if m.GetCuisineId() < 1 {
 			err := SearchMealsRequestValidationError{
 				field:  "CuisineId",
@@ -174,11 +171,9 @@ func (m *SearchMealsRequest) validate(all bool) error {
 			}
 			errors = append(errors, err)
 		}
-
 	}
 
 	if m.MaxCookingTimeMinutes != nil {
-
 		if val := m.GetMaxCookingTimeMinutes(); val < 1 || val > 600 {
 			err := SearchMealsRequestValidationError{
 				field:  "MaxCookingTimeMinutes",
@@ -189,7 +184,6 @@ func (m *SearchMealsRequest) validate(all bool) error {
 			}
 			errors = append(errors, err)
 		}
-
 	}
 
 	if len(errors) > 0 {

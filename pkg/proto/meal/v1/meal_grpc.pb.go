@@ -8,6 +8,7 @@ package meal_v1
 
 import (
 	context "context"
+
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -120,12 +121,15 @@ type UnimplementedMealsServiceServer struct{}
 func (UnimplementedMealsServiceServer) SearchMeals(context.Context, *SearchMealsRequest) (*SearchMealsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchMeals not implemented")
 }
+
 func (UnimplementedMealsServiceServer) AddToFavorites(context.Context, *AddToFavoritesRequest) (*AddToFavoritesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddToFavorites not implemented")
 }
+
 func (UnimplementedMealsServiceServer) GetFavorites(context.Context, *GetFavoritesRequest) (*GetFavoritesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetFavorites not implemented")
 }
+
 func (UnimplementedMealsServiceServer) GenerateShoppingList(context.Context, *GenerateShoppingListRequest) (*GenerateShoppingListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GenerateShoppingList not implemented")
 }
