@@ -83,6 +83,28 @@ func TestFetchRandomMeal(t *testing.T) {
 			},
 		},
 		{
+			name: "400 bad request response",
+			configMock: func() clients.TheMealsDbConfig {
+				mock := mocks.NewTheMealsDbConfig(t)
+				mock.EXPECT().Url().
+					Return("http://some.url")
+
+				return mock
+			},
+			httpClientMock: func() clients.HTTPClient {
+				clientMock := mocks.NewHTTPClient(t)
+				clientMock.EXPECT().Do(mock.Anything).
+					Return(&http.Response{
+						StatusCode: http.StatusBadRequest,
+						Body:       io.NopCloser(strings.NewReader(mockRandomMealResponse)),
+					}, nil)
+
+				return clientMock
+			},
+			expectedResp: business.Meal{},
+			expectedErr:  themealsdb_client.ErrStatusCodeIsNotOk,
+		},
+		{
 			name: "error response",
 			configMock: func() clients.TheMealsDbConfig {
 				mock := mocks.NewTheMealsDbConfig(t)

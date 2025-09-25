@@ -12,6 +12,7 @@ vars:
   MOCKERY_VERSION: "v2.53.3"
 
   BIN_DIR: "{{.ROOT_DIR}}/bin"
+  COVERAGE_DIR: "{{.ROOT_DIR}}/coverage"
   GOLANGCI_LINT: "{{.BIN_DIR}}/golangci-lint"
   GCI: "{{.BIN_DIR}}/gci"
   GOFUMPT: "{{.BIN_DIR}}/gofumpt"
@@ -168,3 +169,38 @@ tasks:
     cmds:
       - echo "Generating Go code..."
       - "{{.BUF}} generate"
+
+  # Команды тестирования
+  test:
+    desc: "Запускает тесты, генерирует отчёт покрытия и открывает его в браузере"
+    cmds:
+      - task: test-coverage
+      - task: coverage:html
+
+  test-coverage:
+    desc: "Запускает тесты с покрытием бизнес-логики"
+    cmds:
+      - echo "🧪 Running tests with coverage..."
+      - rm -rf {{.COVERAGE_DIR}}
+      - mkdir -p {{.COVERAGE_DIR}}
+      - |
+        TARGET_PACKAGES=$(go list ./internal/... | grep -v "/mocks" | grep -E '/(apis|clients|services|repositories)(/|$)' | tr '\n' ',')
+        if [ -z "$TARGET_PACKAGES" ]; then
+          echo "⚠️ No packages found for testing"
+          exit 1
+        fi
+        go test -v -coverprofile={{.COVERAGE_DIR}}/coverage.out -coverpkg=$TARGET_PACKAGES ./...
+        go tool cover -func={{.COVERAGE_DIR}}/coverage.out | tail -n1
+
+  coverage:html:
+    desc: "Генерирует HTML-отчёт покрытия и открывает его в браузере"
+    cmds:
+      - echo "🌐 Generating HTML coverage report..."
+      - |
+        OUTPUT={{.COVERAGE_DIR}}/coverage.html
+        go tool cover -html={{.COVERAGE_DIR}}/coverage.out -o $OUTPUT
+        if command -v open &> /dev/null; then
+          open $OUTPUT
+        elif command -v xdg-open &> /dev/null; then
+          xdg-open $OUTPUT
+        fi
