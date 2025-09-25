@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"log/slog"
+	"net/http"
 
 	"github.com/gomeal/config/pkg/config"
 	"github.com/gomeal/logger/pkg/logger"
@@ -22,6 +23,8 @@ func InitClients(ctx context.Context, provider config.Provider) Clients {
 	}
 
 	return Clients{
-		TheMealsDbClient: themealsdb_client.New(mealsClientCfg),
+		TheMealsDbClient: themealsdb_client.New(mealsClientCfg, &http.Client{
+			Timeout: mealsClientCfg.Timeout(),
+		}),
 	}
 }

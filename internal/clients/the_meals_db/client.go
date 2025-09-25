@@ -1,8 +1,9 @@
 package themealsdb_client
 
 import (
-	"net/http"
 	"time"
+
+	"github.com/gomeal/meal-api/internal/clients"
 )
 
 type Config interface {
@@ -12,14 +13,12 @@ type Config interface {
 
 type Client struct {
 	config Config
-	cl     *http.Client
+	cl     clients.HTTPClient
 }
 
-func New(config Config) *Client {
+func New(config Config, httpClient clients.HTTPClient) *Client {
 	return &Client{
 		config: config,
-		cl: &http.Client{
-			Timeout: config.Timeout(),
-		},
+		cl:     httpClient,
 	}
 }
