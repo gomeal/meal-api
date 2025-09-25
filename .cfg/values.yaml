@@ -10,3 +10,9 @@ meal_fetcher_cron_duration:
 meal_fetcher_cron_batch_size:
   type: "int"
   value: 10
+the_meals_db_http_url:
+  type: "string"
+  value: "https://www.themealdb.com/api/json/v1/1/random.php"
+the_meals_db_http_timeout:
+  type: "duration"
+  value: "5s"

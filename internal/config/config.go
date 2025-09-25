@@ -8,6 +8,9 @@ const (
 
 	MealFetcherCronDuration  = config.Key("meal_fetcher_cron_duration")
 	MealFetcherCronBatchSize = config.Key("meal_fetcher_cron_batch_size")
+
+	TheMealsDbUrl     = config.Key("the_meals_db_http_url")
+	TheMealsDbTimeout = config.Key("the_meals_db_http_timeout")
 )
 
 const (

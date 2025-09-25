@@ -4,7 +4,7 @@ CREATE TABLE meals (
     id SERIAL PRIMARY KEY,
     external_id VARCHAR(20) UNIQUE, -- idMeal из TheMealDB API
     name VARCHAR(255) NOT NULL, -- strMeal
-    description TEXT, -- strInstructions
+    instructions TEXT, -- strInstructions
     image_url TEXT, -- strMealThumb
     category_id INTEGER REFERENCES categories(id),
     cuisine_id INTEGER REFERENCES cuisines(id),

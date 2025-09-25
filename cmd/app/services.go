@@ -11,8 +11,8 @@ type Services struct {
 	MealsFetcherService services.MealFetcherService
 }
 
-func InitServices(ctx context.Context) Services {
+func InitServices(ctx context.Context, clients Clients) Services {
 	return Services{
-		MealsFetcherService: meal_fetcher_service.New(),
+		MealsFetcherService: meal_fetcher_service.New(clients.TheMealsDbClient),
 	}
 }
