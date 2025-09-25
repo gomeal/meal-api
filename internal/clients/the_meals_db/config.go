@@ -8,10 +8,11 @@ import (
 
 	"github.com/gomeal/config/pkg/config"
 	"github.com/gomeal/logger/pkg/logger"
+	"github.com/gomeal/meal-api/internal/clients"
 	app_config "github.com/gomeal/meal-api/internal/config"
 )
 
-var _ Config = &configImpl{}
+var _ clients.TheMealsDbConfig = &configImpl{}
 
 type Provider interface {
 	config.Provider
