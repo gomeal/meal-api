@@ -10,3 +10,6 @@ packages:
     github.com/gomeal/meal-api/internal/clients:
         config:
             include-regex: "|.*Client$|.*Config$"
+    github.com/gomeal/meal-api/internal/repositories:
+        config:
+            include-regex: ".*Repository$"

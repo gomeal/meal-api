@@ -1,13 +1,18 @@
 package meal_fetcher_service
 
-import "github.com/gomeal/meal-api/internal/clients"
+import (
+	"github.com/gomeal/meal-api/internal/clients"
+	"github.com/gomeal/meal-api/internal/repositories"
+)
 
 type serviceImpl struct {
-	mealsClient clients.TheMealsDbClient
+	mealClient     clients.TheMealsDbClient
+	mealRepository repositories.MealRepository
 }
 
-func New(mealsClient clients.TheMealsDbClient) *serviceImpl {
+func New(mealClient clients.TheMealsDbClient, mealRepository repositories.MealRepository) *serviceImpl {
 	return &serviceImpl{
-		mealsClient: mealsClient,
+		mealClient:     mealClient,
+		mealRepository: mealRepository,
 	}
 }

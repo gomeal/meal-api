@@ -4,7 +4,7 @@ CREATE TABLE user_favorites (
     id SERIAL PRIMARY KEY,
     user_id uuid NOT NULL,
     meal_id INTEGER REFERENCES meals(id) ON DELETE CASCADE,
-    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    added_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(user_id, meal_id)
 );
 
