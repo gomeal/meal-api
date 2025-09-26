@@ -6,7 +6,7 @@ import (
 )
 
 type (
-	Model struct {
+	Meal struct {
 		ID           int64
 		ExternalID   int64
 		Name         string
@@ -35,7 +35,7 @@ type (
 		UpdatedAt time.Time
 	}
 
-	MealIngridient struct {
+	MealIngredient struct {
 		ID        int64
 		Name      string
 		CreatedAt time.Time
@@ -48,6 +48,7 @@ type (
 		IngridientID int64
 		Measure      string
 		Position     int64
+		UpdatedAt    time.Time
 		CreatedAt    time.Time
 	}
 )

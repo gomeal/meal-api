@@ -65,7 +65,7 @@ func TestFetchRandomMeal(t *testing.T) {
 				ImageURL:     "https://www.themealdb.com/images/media/meals/rvypwy1503069308.jpg",
 				Tags:         []string{"Shellfish", "Seafood"},
 				YouTubeURL:   "https://www.youtube.com/watch?v=OcarztU8cYo",
-				Ingridients: []business.MealIngridient{
+				Ingredients: []business.MealIngredient{
 					{
 						Name:    "Olive Oil",
 						Measure: "1 tbsp",

@@ -7,6 +7,7 @@ CREATE TABLE meal_ingredients (
     measure VARCHAR(100) NOT NULL, -- strMeasure1, strMeasure2, etc.
     position INTEGER NOT NULL, -- порядок в рецепте (1, 2, 3...)
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(meal_id, ingredient_id)
 );
 

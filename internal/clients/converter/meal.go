@@ -12,7 +12,7 @@ import (
 
 func TransportMealToBusinessMeal(meal transport.Meal) business.Meal {
 	var (
-		ingridients = meal.GetIngridients()
+		ingridients = meal.GetIngredients()
 		measures    = meal.GetMeasures()
 	)
 
@@ -29,12 +29,12 @@ func TransportMealToBusinessMeal(meal transport.Meal) business.Meal {
 		ImageURL:     meal.StrMealThumb,
 		Tags:         strings.Split(meal.StrTags, ","),
 		YouTubeURL:   meal.StrYoutube,
-		Ingridients: lo.Filter(lo.Map(ingridients, func(ingridientName string, idx int) business.MealIngridient {
-			return business.MealIngridient{
+		Ingredients: lo.Filter(lo.Map(ingridients, func(ingridientName string, idx int) business.MealIngredient {
+			return business.MealIngredient{
 				Name:    ingridientName,
 				Measure: measures[idx],
 			}
-		}), func(ingridient business.MealIngridient, idx int) bool {
+		}), func(ingridient business.MealIngredient, idx int) bool {
 			return len(ingridient.Name) > 0
 		}),
 		RecipeURL: meal.StrSource,

@@ -11,7 +11,7 @@ type (
 		ImageURL     string
 		Tags         []string
 		YouTubeURL   string
-		Ingridients  []MealIngridient
+		Ingredients  []MealIngredient
 		RecipeURL    string
 	}
 
@@ -25,7 +25,7 @@ type (
 		Name string
 	}
 
-	MealIngridient struct {
+	MealIngredient struct {
 		ID      int64
 		Name    string
 		Measure string

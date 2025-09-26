@@ -25,7 +25,7 @@ func main() {
 	logger.Info(ctx, "config provider created successfully", slog.String("application-name", provider.GetConfigClient().GetValue(app_config.ApplicationName).String()))
 
 	var (
-		repositories = app.InitRepositories()
+		repositories = app.InitRepositories(ctx, provider)
 		clients      = app.InitClients(ctx, provider)
 		services     = app.InitServices(ctx, clients, repositories)
 		schedulers   = app.InitSchedulers(ctx, provider, services)

@@ -1,6 +1,10 @@
 package app_config
 
-import "github.com/gomeal/config/pkg/config"
+import (
+	"fmt"
+
+	"github.com/gomeal/config/pkg/config"
+)
 
 const (
 	ApplicationName = config.Key("application_name")
@@ -18,5 +22,16 @@ const (
 	PostgresPassword     = config.Secret("POSTGRES_PASSWORD")
 	PostgresHost         = config.Secret("POSTGRES_HOST")
 	PostgresPort         = config.Secret("POSTGRES_PORT")
-	PostgresDatabaseName = config.Secret("POSTGRES_DATABASE_NAME")
+	PostgresDatabaseName = config.Secret("POSTGRES_DB")
 )
+
+func PostgresURI(provider config.Provider) string {
+	return fmt.Sprintf(
+		"user=%s password=%s dbname=%s sslmode=disable host=%s port=%s",
+		provider.GetSecretClient().GetSecret(PostgresUser).String(),
+		provider.GetSecretClient().GetSecret(PostgresPassword).String(),
+		provider.GetSecretClient().GetSecret(PostgresDatabaseName).String(),
+		provider.GetSecretClient().GetSecret(PostgresHost).String(),
+		provider.GetSecretClient().GetSecret(PostgresPort).String(),
+	)
+}

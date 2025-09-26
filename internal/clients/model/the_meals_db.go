@@ -62,7 +62,7 @@ type (
 	}
 )
 
-func (m *Meal) GetIngridients() []string {
+func (m *Meal) GetIngredients() []string {
 	return []string{
 		m.StrIngredient1,
 		m.StrIngredient2,
