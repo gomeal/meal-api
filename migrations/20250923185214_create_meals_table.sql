@@ -6,8 +6,8 @@ CREATE TABLE meals (
     name VARCHAR(255) NOT NULL, -- strMeal
     instructions TEXT NOT NULL, -- strInstructions
     image_url TEXT, -- strMealThumb
-    category_id INTEGER REFERENCES categories(id),
-    cuisine_id INTEGER REFERENCES cuisines(id),
+    category_id INTEGER NOT NULL,
+    cuisine_id INTEGER NOT NULL,
     tags TEXT ARRAY, -- strTags
     youtube_url TEXT, -- strYoutube
     recipe_url TEXT, -- strSource

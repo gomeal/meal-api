@@ -2,8 +2,8 @@
 -- +goose StatementBegin
 CREATE TABLE meal_ingredients (
     id SERIAL PRIMARY KEY,
-    meal_id INTEGER REFERENCES meals(id) ON DELETE CASCADE,
-    ingredient_id INTEGER REFERENCES ingredients(id),
+    meal_id INTEGER NOT NULL,
+    ingredient_id INTEGER NOT NULL,
     measure VARCHAR(100) NOT NULL, -- strMeasure1, strMeasure2, etc.
     position INTEGER NOT NULL, -- порядок в рецепте (1, 2, 3...)
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

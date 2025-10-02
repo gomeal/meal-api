@@ -184,7 +184,7 @@ tasks:
       - rm -rf {{.COVERAGE_DIR}}
       - mkdir -p {{.COVERAGE_DIR}}
       - |
-        TARGET_PACKAGES=$(go list ./internal/... | grep -v "/mocks" | grep -E '/(apis|clients|services|repositories)(/|$)' | tr '\n' ',')
+        TARGET_PACKAGES=$(go list ./internal/... ./tests/... | grep -v "/mocks" | grep -E '/(apis|clients|services|repositories)(/|$)' | tr '\n' ',')
         if [ -z "$TARGET_PACKAGES" ]; then
           echo "⚠️ No packages found for testing"
           exit 1
